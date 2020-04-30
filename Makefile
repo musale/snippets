@@ -1,3 +1,3 @@
-.PHONY: start
-start:
-	@go run cmd/web/main.go
+.PHONY: startweb
+startweb:
+	@go run cmd/web/*
