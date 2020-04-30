@@ -9,11 +9,13 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/musale/snippets/mysql"
 )
 
 type webApp struct {
 	errorLog *log.Logger
 	infoLog  *log.Logger
+	snippets *mysql.SnippetModel
 }
 
 func main() {
@@ -34,6 +36,7 @@ func main() {
 	app := &webApp{
 		infoLog:  infoLog,
 		errorLog: errorLog,
+		snippets: &mysql.SnippetModel{DB: db},
 	}
 
 	server := &http.Server{
