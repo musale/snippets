@@ -9,7 +9,7 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/musale/snippets/mysql"
+	"github.com/musale/snippets/pkg/models/mysql"
 )
 
 type webApp struct {
