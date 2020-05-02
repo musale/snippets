@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+
+	"github.com/musale/snippets/pkg/models"
 )
 
 // home handles the homepage
@@ -36,7 +38,15 @@ func (app *webApp) showSnippet(w http.ResponseWriter, r *http.Request) {
 		app.notFound(w)
 		return
 	}
-	fmt.Fprintf(w, "Snippet is of id %d", id)
+	s, err := app.snippets.Get(id)
+	if err == models.ErrNoRecord {
+		app.notFound(w)
+		return
+	} else if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	fmt.Fprintf(w, "%v", s)
 }
 
 func (app *webApp) createSnippet(w http.ResponseWriter, r *http.Request) {
