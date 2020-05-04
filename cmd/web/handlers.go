@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -54,7 +55,25 @@ func (app *webApp) showSnippet(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
-	fmt.Fprintf(w, "%v", s)
+	files := []string{
+		"./ui/html/show.page.html",
+		"./ui/html/base.layout.html",
+		"./ui/html/footer.partial.html",
+	}
+
+	// Parse the template files...
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	// And then execute them. Notice how we are passing in the snippet
+	// data (a models.Snippet struct) as the final parameter.
+	err = ts.Execute(w, s)
+	if err != nil {
+		app.serverError(w, err)
+	}
 }
 
 func (app *webApp) createSnippet(w http.ResponseWriter, r *http.Request) {
