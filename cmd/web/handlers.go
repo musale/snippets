@@ -55,6 +55,7 @@ func (app *webApp) showSnippet(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
+	data := &templateData{Snippet: s}
 	files := []string{
 		"./ui/html/show.page.html",
 		"./ui/html/base.layout.html",
@@ -70,7 +71,7 @@ func (app *webApp) showSnippet(w http.ResponseWriter, r *http.Request) {
 
 	// And then execute them. Notice how we are passing in the snippet
 	// data (a models.Snippet struct) as the final parameter.
-	err = ts.Execute(w, s)
+	err = ts.Execute(w, data)
 	if err != nil {
 		app.serverError(w, err)
 	}
