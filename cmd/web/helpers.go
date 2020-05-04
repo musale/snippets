@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"runtime/debug"
+	"time"
 )
 
 // serverError writes an error to the errorLog then
@@ -35,11 +36,20 @@ func (app *webApp) render(w http.ResponseWriter, r *http.Request,
 		return
 	}
 	buf := new(bytes.Buffer)
-	err := ts.Execute(buf, td)
+	err := ts.Execute(buf, app.addDefaultData(td, r))
 	if err != nil {
 		app.serverError(w, err)
 		return
 	}
 
 	buf.WriteTo(w)
+}
+
+// addDefaultData injects common data into the templates
+func (app *webApp) addDefaultData(td *templateData, r *http.Request) *templateData {
+	if td == nil {
+		td = &templateData{}
+	}
+	td.CurrentYear = time.Now().Year()
+	return td
 }
