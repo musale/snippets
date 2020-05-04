@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -21,20 +20,7 @@ func (app *webApp) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	data := &templateData{Snippets: s}
-	files := []string{
-		"./ui/html/home.page.html",
-		"./ui/html/base.layout.html",
-		"./ui/html/footer.partial.html",
-	}
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-	err = ts.Execute(w, data)
-	if err != nil {
-		app.serverError(w, err)
-	}
+	app.render(w, r, "home.page.html", data)
 }
 
 // showSnippet displays a specific snippet
@@ -53,25 +39,7 @@ func (app *webApp) showSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	data := &templateData{Snippet: s}
-	files := []string{
-		"./ui/html/show.page.html",
-		"./ui/html/base.layout.html",
-		"./ui/html/footer.partial.html",
-	}
-
-	// Parse the template files...
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, err)
-		return
-	}
-
-	// And then execute them. Notice how we are passing in the snippet
-	// data (a models.Snippet struct) as the final parameter.
-	err = ts.Execute(w, data)
-	if err != nil {
-		app.serverError(w, err)
-	}
+	app.render(w, r, "show.page.html", data)
 }
 
 func (app *webApp) createSnippet(w http.ResponseWriter, r *http.Request) {
