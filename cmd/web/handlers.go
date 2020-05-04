@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -39,18 +38,20 @@ func (app *webApp) showSnippet(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *webApp) createSnippet(w http.ResponseWriter, r *http.Request) {
-	title := "O snail"
-	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
-	expires := "7"
+	// title := "O snail"
+	// content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
+	// expires := "7"
 
-	id, err := app.snippets.Insert(title, content, expires)
-	if err != nil {
-		app.serverError(w, err)
-	}
-	http.Redirect(w, r, fmt.Sprintf("/snippet/%d", id), http.StatusSeeOther)
+	// id, err := app.snippets.Insert(title, content, expires)
+	// if err != nil {
+	// 	app.serverError(w, err)
+	// }
+	data := &templateData{}
+	app.render(w, r, "show.page.html", data)
+	// http.Redirect(w, r, fmt.Sprintf("/snippet/%d", id), http.StatusSeeOther)
 
 }
 
 func (app *webApp) createSnippetForm(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Creating a new thing"))
+	app.render(w, r, "create.page.html", nil)
 }
