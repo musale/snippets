@@ -2,6 +2,7 @@ package mock
 
 import (
 	"time"
+
 	"github.com/musale/snippets/pkg/models"
 )
 
@@ -18,7 +19,7 @@ type UserModel struct{}
 // Insert into user
 func (m *UserModel) Insert(name, email, password string) error {
 	switch email {
-	case "kunta@snippets.com":
+	case "dupe@example.com":
 		return models.ErrDuplicateEmail
 	default:
 		return nil

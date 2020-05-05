@@ -1,17 +1,35 @@
 package main
 
 import (
+	"html"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
+	"net/url"
+	"regexp"
 	"testing"
 	"time"
 
 	"github.com/golangcollege/sessions"
 	"github.com/musale/snippets/pkg/models/mock"
 )
+
+var csrfTokenRX = regexp.MustCompile(`<input type="hidden" name="csrf_token" value='(.+)'>`)
+
+func extractCSRFToken(t *testing.T, body []byte) string {
+	// Use the FindSubmatch method to extract the token from the HTML body.
+	// Note that this returns an array with the entire matched pattern in the
+	// first position, and the values of any captured data in the subsequent
+	// positions.
+	matches := csrfTokenRX.FindSubmatch(body)
+	if len(matches) < 2 {
+		t.Fatal("no csrf token found in body")
+	}
+
+	return html.UnescapeString(string(matches[1]))
+}
 
 func newTestWebApp(t *testing.T) *webApp {
 	t.Helper()
@@ -48,6 +66,19 @@ func (ts *testServer) get(t *testing.T, urlPath string) (int, http.Header, []byt
 	return rs.StatusCode, rs.Header, body
 }
 
+func (ts *testServer) postForm(t *testing.T, urlPath string, form url.Values) (int, http.Header, []byte) {
+	rs, err := ts.Client().PostForm(ts.URL+urlPath, form)
+	checkError(t, err)
+
+	// Read the response body.
+	defer rs.Body.Close()
+	body, err := ioutil.ReadAll(rs.Body)
+	checkError(t, err)
+
+	// Return the response status, headers and body.
+	return rs.StatusCode, rs.Header, body
+}
+
 func newTestServer(t *testing.T, h http.Handler) *testServer {
 	t.Helper()
 	ts := httptest.NewTLSServer(h)
@@ -79,13 +110,13 @@ func checkError(t *testing.T, err error) {
 func checkStatus(t *testing.T, want, got int) {
 	t.Helper()
 	if got != want {
-		t.Errorf("want %d but got %d", want, got)
+		t.Errorf("want status code %d but got %d", want, got)
 	}
 }
 
 func checkBody(t *testing.T, want, got string) {
 	t.Helper()
 	if got != want {
-		t.Errorf("want %s but got %s", want, got)
+		t.Errorf("want body to be %s but got %s", want, got)
 	}
 }
