@@ -60,6 +60,9 @@ func (app *webApp) createSnippet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.serverError(w, err)
 	}
+
+	msg := fmt.Sprintf("Snippet with id %d was created successfully!", id)
+	app.session.Put(r, "flash", msg)
 	http.Redirect(w, r, fmt.Sprintf("/snippet/%d", id), http.StatusSeeOther)
 
 }

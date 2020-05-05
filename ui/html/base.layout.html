@@ -25,6 +25,9 @@
       <a href="/snippet/create">Create snippet</a>
     </nav>
     <section>
+      {{with .FlashMessage}}
+        <div class="flash">{{.}}</div>
+      {{end}}
       {{template "body" .}}
     </section>
     {{template "footer" .}}
