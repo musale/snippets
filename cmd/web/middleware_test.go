@@ -10,9 +10,7 @@ import (
 func TestSecureHeaders(t *testing.T) {
 	rr := httptest.NewRecorder()
 	r, err := http.NewRequest("GET", "/", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
+	checkError(t, err)
 
 	next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("OK"))
@@ -24,25 +22,14 @@ func TestSecureHeaders(t *testing.T) {
 	defer rs.Body.Close()
 
 	frameOptions := rs.Header.Get("X-Frame-Options")
-	if frameOptions != "deny" {
-		t.Errorf("want %s but got %s", "deny", frameOptions)
-	}
+	assertEqual(t, "deny", frameOptions)
+
 	xssProtection := rs.Header.Get("X-XSS-Protection")
 	xssWant := "1;mode=block"
-	if xssProtection != xssWant {
-		t.Errorf("want %s but got %s", xssWant, xssProtection)
-	}
+	assertEqual(t, xssWant, xssProtection)
 
-	if rs.StatusCode != http.StatusOK {
-		t.Errorf("want code %d but got %d", http.StatusOK, rs.StatusCode)
-	}
-
+	checkStatus(t, http.StatusOK, rs.StatusCode)
 	body, err := ioutil.ReadAll(rs.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if string(body) != "OK" {
-		t.Errorf("want %s but got %s", "OK", string(body))
-	}
+	checkError(t, err)
+	checkBody(t, "OK", string(body))
 }
