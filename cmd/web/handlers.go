@@ -9,6 +9,31 @@ import (
 	"github.com/musale/snippets/pkg/models"
 )
 
+// signupUserForm is used to render register a new user form
+func (app *webApp) signupUserForm(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Sign up page")
+}
+
+// signupUser is used to register a new user
+func (app *webApp) signupUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Sign up")
+}
+
+// loginUserForm is used to render a login form for a user
+func (app *webApp) loginUserForm(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Log in page")
+}
+
+// loginUser is used to allow a registered user app access
+func (app *webApp) loginUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Log in page")
+}
+
+// logoutUser is used to revoke auth
+func (app *webApp) logoutUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Log out page")
+}
+
 // home handles the homepage
 func (app *webApp) home(w http.ResponseWriter, r *http.Request) {
 	s, err := app.snippets.Latest()
