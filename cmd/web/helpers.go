@@ -52,5 +52,12 @@ func (app *webApp) addDefaultData(td *templateData, r *http.Request) *templateDa
 	}
 	td.CurrentYear = time.Now().Year()
 	td.FlashMessage = app.session.PopString(r, "flash")
+	td.AuthenticatedUser = app.authenticatedUser(r)
 	return td
+}
+
+// The authenticatedUser method returns the ID of the current user from the
+// session, or zero if the request is from an unauthenticated user.
+func (app *webApp) authenticatedUser(r *http.Request) int {
+	return app.session.GetInt(r, "userID")
 }
