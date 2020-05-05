@@ -86,7 +86,11 @@ func (app *webApp) loginUser(w http.ResponseWriter, r *http.Request) {
 
 // logoutUser is used to revoke auth
 func (app *webApp) logoutUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Log out page")
+	// Remove the userID from the session data so that the user is 'logged out'.
+	app.session.Remove(r, "userID")
+	// Add a flash message to the session to confirm to the user that they've been logged out.
+	app.session.Put(r, "flash", "You've been logged out successfully!")
+	http.Redirect(w, r, "/", 303)
 }
 
 // home handles the homepage
