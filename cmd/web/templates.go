@@ -16,7 +16,7 @@ type templateData struct {
 	CurrentYear       int
 	Form              *forms.Form
 	FlashMessage      string
-	AuthenticatedUser int
+	AuthenticatedUser *models.User
 	CSRFToken         string
 }
 

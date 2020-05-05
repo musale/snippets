@@ -16,6 +16,10 @@ import (
 	models "github.com/musale/snippets/pkg/models/mysql"
 )
 
+type contextKey string
+
+var contextKeyUser = contextKey("user")
+
 type webApp struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
