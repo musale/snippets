@@ -13,7 +13,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golangcollege/sessions"
-	models "github.com/musale/snippets/pkg/models/mysql"
+	models "github.com/musale/snippets/pkg/models"
+	mysql "github.com/musale/snippets/pkg/models/mysql"
 )
 
 type contextKey string
@@ -23,10 +24,18 @@ var contextKeyUser = contextKey("user")
 type webApp struct {
 	errorLog      *log.Logger
 	infoLog       *log.Logger
-	snippets      *models.SnippetModel
-	users         *models.UserModel
 	templateCache map[string]*template.Template
 	session       *sessions.Session
+	snippets      interface {
+		Insert(string, string, string) (int, error)
+		Get(int) (*models.Snippet, error)
+		Latest() ([]*models.Snippet, error)
+	}
+	users interface {
+		Insert(string, string, string) error
+		Authenticate(string, string) (int, error)
+		Get(int) (*models.User, error)
+	}
 }
 
 func main() {
@@ -58,8 +67,8 @@ func main() {
 	app := &webApp{
 		infoLog:       infoLog,
 		errorLog:      errorLog,
-		snippets:      &models.SnippetModel{DB: db},
-		users:         &models.UserModel{DB: db},
+		snippets:      &mysql.SnippetModel{DB: db},
+		users:         &mysql.UserModel{DB: db},
 		templateCache: templateCache,
 		session:       session,
 	}
