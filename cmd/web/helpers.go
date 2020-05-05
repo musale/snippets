@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"runtime/debug"
 	"time"
+
+	"github.com/justinas/nosurf"
 )
 
 // serverError writes an error to the errorLog then
@@ -53,6 +55,7 @@ func (app *webApp) addDefaultData(td *templateData, r *http.Request) *templateDa
 	td.CurrentYear = time.Now().Year()
 	td.FlashMessage = app.session.PopString(r, "flash")
 	td.AuthenticatedUser = app.authenticatedUser(r)
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
