@@ -13,8 +13,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golangcollege/sessions"
-	models "github.com/musale/snippets/pkg/models"
-	mysql "github.com/musale/snippets/pkg/models/mysql"
+	"github.com/musale/snippets/pkg/models"
+	"github.com/musale/snippets/pkg/models/mysql"
 )
 
 type contextKey string
