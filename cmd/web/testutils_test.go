@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/cookiejar"
 	"net/http/httptest"
 	"testing"
 )
@@ -33,7 +34,17 @@ func (ts *testServer) get(t *testing.T, urlPath string) (int, http.Header, []byt
 }
 
 func newTestServer(t *testing.T, h http.Handler) *testServer {
+	t.Helper()
 	ts := httptest.NewTLSServer(h)
+
+	jar, err := cookiejar.New(nil)
+	checkError(t, err)
+
+	ts.Client().Jar = jar
+	ts.Client().CheckRedirect = func(
+		req *http.Request, via []*http.Request) error {
+		return http.ErrUseLastResponse
+	}
 	return &testServer{ts}
 }
 
