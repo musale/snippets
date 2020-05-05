@@ -9,6 +9,10 @@ import (
 	"github.com/musale/snippets/pkg/models"
 )
 
+func ping(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("OK"))
+}
+
 // signupUserForm is used to render register a new user form
 func (app *webApp) signupUserForm(w http.ResponseWriter, r *http.Request) {
 	app.render(w, r, "signup.page.html", &templateData{Form: forms.New(nil)})
